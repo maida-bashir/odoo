@@ -1,0 +1,607 @@
+<odoo>
+    <!-- Incidents and dashboard -->
+    <record id="view_dr_incident_kanban" model="ir.ui.view">
+        <field name="name">dr.incident.kanban</field>
+        <field name="model">dr.incident</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="incident_type"/>
+                <field name="state"/>
+                <field name="open_request_count"/>
+                <field name="area_count"/>
+                <field name="camp_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex justify-content-between">
+                                <strong><field name="name"/></strong>
+                                <span class="badge rounded-pill text-bg-info"><field name="state"/></span>
+                            </div>
+                            <div class="text-muted"><field name="code"/> · <field name="incident_type"/></div>
+                            <div class="row mt-3">
+                                <div class="col-4"><strong><field name="area_count"/></strong><br/>Areas</div>
+                                <div class="col-4"><strong><field name="camp_count"/></strong><br/>Camps</div>
+                                <div class="col-4"><strong><field name="open_request_count"/></strong><br/>Open Requests</div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_dr_incident_list" model="ir.ui.view">
+        <field name="name">dr.incident.list</field>
+        <field name="model">dr.incident</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="incident_type"/>
+                <field name="start_date"/>
+                <field name="state"/>
+                <field name="area_count"/>
+                <field name="camp_count"/>
+                <field name="open_request_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dr_incident_form" model="ir.ui.view">
+        <field name="name">dr.incident.form</field>
+        <field name="model">dr.incident</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_close" type="object" string="Close Incident" class="btn-primary" invisible="state != 'active'"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft" invisible="state != 'closed'"/>
+                    <field name="state" widget="statusbar" readonly="1" statusbar_visible="draft,active,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_open_requests">
+                            <field name="open_request_count" widget="statinfo" string="Open Requests"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_activate" invisible="state != 'draft'">
+                            <span class="o_stat_text">Activate</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="incident_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="state"/>
+                            <field name="area_count"/>
+                            <field name="camp_count"/>
+                            <field name="request_count"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Situation summary and operational notes..."/>
+                    <notebook>
+                        <page string="Affected Areas">
+                            <field name="affected_area_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="location"/>
+                                    <field name="population"/>
+                                    <field name="priority"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Relief Camps">
+                            <field name="camp_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="area_id"/>
+                                    <field name="capacity"/>
+                                    <field name="occupancy"/>
+                                    <field name="available_capacity"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Volunteer Teams">
+                            <field name="volunteer_team_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="leader_id"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dr_incident_search" model="ir.ui.view">
+        <field name="name">dr.incident.search</field>
+        <field name="model">dr.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="incident_type"/>
+                <field name="state"/>
+                <filter name="active_incidents" string="Active" domain="[('state', '=', 'active')]"/>
+                <group string="Group By">
+                    <filter name="group_type" string="Type" context="{'group_by': 'incident_type'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Areas and camps -->
+    <record id="view_dr_area_list" model="ir.ui.view">
+        <field name="name">dr.affected.area.list</field>
+        <field name="model">dr.affected.area</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="location"/>
+                <field name="population"/>
+                <field name="priority"/>
+                <field name="status"/>
+                <field name="camp_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dr_area_form" model="ir.ui.view">
+        <field name="name">dr.affected.area.form</field>
+        <field name="model">dr.affected.area</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="incident_id"/>
+                        <field name="location"/>
+                        <field name="population"/>
+                        <field name="priority"/>
+                        <field name="status"/>
+                        <field name="camp_count" readonly="1"/>
+                    </group>
+                    <field name="notes"/>
+                    <field name="camp_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="capacity"/>
+                            <field name="occupancy"/>
+                            <field name="available_capacity"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_dr_camp_list" model="ir.ui.view">
+        <field name="name">dr.relief.camp.list</field>
+        <field name="model">dr.relief.camp</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="area_id"/>
+                <field name="capacity"/>
+                <field name="occupancy"/>
+                <field name="available_capacity"/>
+                <field name="manager_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dr_camp_form" model="ir.ui.view">
+        <field name="name">dr.relief.camp.form</field>
+        <field name="model">dr.relief.camp</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="incident_id"/>
+                            <field name="area_id"/>
+                            <field name="address"/>
+                            <field name="manager_id"/>
+                        </group>
+                        <group>
+                            <field name="capacity"/>
+                            <field name="occupancy"/>
+                            <field name="available_capacity"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Resources -->
+    <record id="view_dr_resource_list" model="ir.ui.view">
+        <field name="name">dr.resource.list</field>
+        <field name="model">dr.resource</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="quantity_available &lt;= 0" decoration-warning="quantity_available &lt;= reorder_level">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="uom"/>
+                <field name="location"/>
+                <field name="quantity_on_hand"/>
+                <field name="quantity_reserved"/>
+                <field name="quantity_available"/>
+                <field name="reorder_level"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dr_resource_form" model="ir.ui.view">
+        <field name="name">dr.resource.form</field>
+        <field name="model">dr.resource</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="category"/>
+                            <field name="uom"/>
+                            <field name="location"/>
+                        </group>
+                        <group>
+                            <field name="quantity_on_hand"/>
+                            <field name="quantity_reserved" readonly="1"/>
+                            <field name="quantity_available" readonly="1"/>
+                            <field name="reorder_level"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        Available quantity is on hand minus active reservations. Reservations are created automatically when an approved request is allocated.
+                    </div>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_dr_resource_search" model="ir.ui.view">
+        <field name="name">dr.resource.search</field>
+        <field name="model">dr.resource</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="location"/>
+                <filter name="low_stock" string="Low Stock" domain="[('quantity_available', '&lt;=', 'reorder_level')]"/>
+                <group string="Group By">
+                    <filter name="group_category" string="Category" context="{'group_by': 'category'}"/>
+                    <filter name="group_location" string="Location" context="{'group_by': 'location'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Requests and workflow -->
+    <record id="view_dr_request_kanban" model="ir.ui.view">
+        <field name="name">dr.emergency.request.kanban</field>
+        <field name="model">dr.emergency.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="total_requested"/>
+                <field name="total_allocated"/>
+                <field name="total_delivered"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex justify-content-between">
+                                <strong><field name="name"/></strong>
+                                <span class="badge rounded-pill text-bg-warning"><field name="priority"/></span>
+                            </div>
+                            <div class="text-muted"><field name="incident_id"/></div>
+                            <div class="mt-2">Requested: <field name="total_requested"/></div>
+                            <div>Allocated: <field name="total_allocated"/></div>
+                            <div>Delivered: <field name="total_delivered"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="view_dr_request_list" model="ir.ui.view">
+        <field name="name">dr.emergency.request.list</field>
+        <field name="model">dr.emergency.request</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority == 'critical'" decoration-muted="state in ('delivered', 'rejected')">
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="affected_area_id"/>
+                <field name="camp_id"/>
+                <field name="request_date"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="total_requested"/>
+                <field name="total_allocated"/>
+                <field name="total_delivered"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dr_request_form" model="ir.ui.view">
+        <field name="name">dr.emergency.request.form</field>
+        <field name="model">dr.emergency.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit" invisible="state != 'requested'"/>
+                    <button name="action_under_review" type="object" string="Under Review" class="btn-primary" invisible="state != 'requested'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'under_review'"/>
+                    <button name="action_allocate" type="object" string="Allocate Resources" class="btn-primary" invisible="state != 'approved'"/>
+                    <button name="action_dispatch" type="object" string="Dispatch" class="btn-primary" invisible="state != 'resources_allocated'"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-secondary" invisible="state in ('delivered', 'rejected')"/>
+                    <field name="state" widget="statusbar" readonly="1" statusbar_visible="requested,under_review,approved,resources_allocated,dispatched,delivered,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_open_deliveries">
+                            <field name="delivery_count" widget="statinfo" string="Deliveries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="incident_id"/>
+                            <field name="affected_area_id"/>
+                            <field name="camp_id"/>
+                            <field name="requester_id"/>
+                        </group>
+                        <group>
+                            <field name="request_date"/>
+                            <field name="priority"/>
+                            <field name="state"/>
+                            <field name="total_requested"/>
+                            <field name="total_allocated"/>
+                            <field name="total_delivered"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Describe the need, urgency, and delivery instructions..."/>
+                    <notebook>
+                        <page string="Requested Resources">
+                            <field name="request_line_ids" readonly="state not in ('requested', 'under_review')">
+                                <list editable="bottom">
+                                    <field name="resource_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom"/>
+                                    <field name="allocated_qty"/>
+                                    <field name="delivered_qty"/>
+                                    <field name="remaining_qty"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Deliveries">
+                            <field name="delivery_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="camp_id"/>
+                                    <field name="state"/>
+                                    <field name="dispatched_at"/>
+                                    <field name="delivered_at"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_dr_request_search" model="ir.ui.view">
+        <field name="name">dr.emergency.request.search</field>
+        <field name="model">dr.emergency.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="incident_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <filter name="open" string="Open" domain="[('state', 'not in', ('delivered', 'rejected'))]"/>
+                <filter name="urgent" string="High Priority" domain="[('priority', 'in', ('high', 'critical'))]"/>
+                <group string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
+                    <filter name="group_incident" string="Incident" context="{'group_by': 'incident_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_dr_request_graph" model="ir.ui.view">
+        <field name="name">dr.emergency.request.graph</field>
+        <field name="model">dr.emergency.request</field>
+        <field name="arch" type="xml">
+            <graph string="Requests by Status" type="bar">
+                <field name="state" type="row"/>
+                <field name="total_requested" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_dr_request_pivot" model="ir.ui.view">
+        <field name="name">dr.emergency.request.pivot</field>
+        <field name="model">dr.emergency.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Request Analysis">
+                <field name="incident_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="total_requested" type="measure"/>
+                <field name="total_delivered" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Volunteers and deliveries -->
+    <record id="view_dr_volunteer_list" model="ir.ui.view">
+        <field name="name">dr.volunteer.list</field>
+        <field name="model">dr.volunteer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="availability"/>
+                <field name="skill_ids" widget="many2many_tags"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dr_volunteer_form" model="ir.ui.view">
+        <field name="name">dr.volunteer.form</field>
+        <field name="model">dr.volunteer</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="availability"/>
+                        <field name="active"/>
+                    </group>
+                    <field name="skill_ids" widget="many2many_tags"/>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_dr_skill_list" model="ir.ui.view">
+        <field name="name">dr.volunteer.skill.list</field>
+        <field name="model">dr.volunteer.skill</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/><field name="description"/></list>
+        </field>
+    </record>
+    <record id="view_dr_skill_form" model="ir.ui.view">
+        <field name="name">dr.volunteer.skill.form</field>
+        <field name="model">dr.volunteer.skill</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name="name"/></group><field name="description"/></sheet></form>
+        </field>
+    </record>
+    <record id="view_dr_team_list" model="ir.ui.view">
+        <field name="name">dr.volunteer.team.list</field>
+        <field name="model">dr.volunteer.team</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/><field name="leader_id"/><field name="member_ids" widget="many2many_tags"/><field name="status"/></list>
+        </field>
+    </record>
+    <record id="view_dr_team_form" model="ir.ui.view">
+        <field name="name">dr.volunteer.team.form</field>
+        <field name="model">dr.volunteer.team</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group><field name="leader_id"/><field name="status"/></group>
+                    <field name="member_ids" widget="many2many_tags"/>
+                    <field name="incident_ids" widget="many2many_tags"/>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_dr_delivery_list" model="ir.ui.view">
+        <field name="name">dr.delivery.list</field>
+        <field name="model">dr.delivery</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="request_id"/>
+                <field name="incident_id"/>
+                <field name="camp_id"/>
+                <field name="state"/>
+                <field name="dispatched_at"/>
+                <field name="delivered_at"/>
+                <field name="received_by"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dr_delivery_form" model="ir.ui.view">
+        <field name="name">dr.delivery.form</field>
+        <field name="model">dr.delivery</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_dispatched" type="object" string="Mark Dispatched" class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_mark_delivered" type="object" string="Mark Delivered" class="btn-primary" invisible="state != 'dispatched'"/>
+                    <field name="state" widget="statusbar" readonly="1" statusbar_visible="pending,dispatched,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group><field name="request_id"/><field name="incident_id"/><field name="camp_id"/></group>
+                        <group><field name="dispatched_at"/><field name="delivered_at"/><field name="received_by"/></group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_dr_dashboard" model="ir.actions.act_window">
+        <field name="name">Relief Dashboard</field>
+        <field name="res_model">dr.incident</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_dr_incident_kanban"/>
+        <field name="context">{'search_default_active_incidents': 1}</field>
+    </record>
+    <record id="action_dr_incident" model="ir.actions.act_window">
+        <field name="name">Incidents</field>
+        <field name="res_model">dr.incident</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_dr_incident_search"/>
+    </record>
+    <record id="action_dr_area" model="ir.actions.act_window">
+        <field name="name">Affected Areas</field><field name="res_model">dr.affected.area</field><field name="view_mode">list,form</field>
+    </record>
+    <record id="action_dr_camp" model="ir.actions.act_window">
+        <field name="name">Relief Camps</field><field name="res_model">dr.relief.camp</field><field name="view_mode">list,form</field>
+    </record>
+    <record id="action_dr_resource" model="ir.actions.act_window">
+        <field name="name">Resources and Inventory</field><field name="res_model">dr.resource</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_dr_resource_search"/>
+    </record>
+    <record id="action_dr_request" model="ir.actions.act_window">
+        <field name="name">Emergency Requests</field><field name="res_model">dr.emergency.request</field><field name="view_mode">kanban,list,form,graph,pivot</field><field name="search_view_id" ref="view_dr_request_search"/>
+    </record>
+    <record id="action_dr_request_graph" model="ir.actions.act_window">
+        <field name="name">Request Analytics</field><field name="res_model">dr.emergency.request</field><field name="view_mode">graph,pivot,list</field><field name="view_id" ref="view_dr_request_graph"/>
+    </record>
+    <record id="action_dr_volunteer" model="ir.actions.act_window">
+        <field name="name">Volunteers</field><field name="res_model">dr.volunteer</field><field name="view_mode">list,form</field>
+    </record>
+    <record id="action_dr_skill" model="ir.actions.act_window">
+        <field name="name">Volunteer Skills</field><field name="res_model">dr.volunteer.skill</field><field name="view_mode">list,form</field>
+    </record>
+    <record id="action_dr_team" model="ir.actions.act_window">
+        <field name="name">Volunteer Teams</field><field name="res_model">dr.volunteer.team</field><field name="view_mode">list,form</field>
+    </record>
+    <record id="action_dr_delivery" model="ir.actions.act_window">
+        <field name="name">Deliveries</field><field name="res_model">dr.delivery</field><field name="view_mode">list,form</field>
+    </record>
+</odoo>

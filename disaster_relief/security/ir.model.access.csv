@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dr_incident_user,dr.incident user,model_dr_incident,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_incident_manager,dr.incident manager,model_dr_incident,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_affected_area_user,dr.affected.area user,model_dr_affected_area,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_affected_area_manager,dr.affected.area manager,model_dr_affected_area,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_relief_camp_user,dr.relief.camp user,model_dr_relief_camp,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_relief_camp_manager,dr.relief.camp manager,model_dr_relief_camp,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_resource_user,dr.resource user,model_dr_resource,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_resource_manager,dr.resource manager,model_dr_resource,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_emergency_request_user,dr.emergency.request user,model_dr_emergency_request,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_emergency_request_manager,dr.emergency.request manager,model_dr_emergency_request,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_emergency_request_line_user,dr.emergency.request.line user,model_dr_emergency_request_line,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_emergency_request_line_manager,dr.emergency.request.line manager,model_dr_emergency_request_line,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_volunteer_user,dr.volunteer user,model_dr_volunteer,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_volunteer_manager,dr.volunteer manager,model_dr_volunteer,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_volunteer_skill_user,dr.volunteer.skill user,model_dr_volunteer_skill,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_volunteer_skill_manager,dr.volunteer.skill manager,model_dr_volunteer_skill,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_volunteer_team_user,dr.volunteer.team user,model_dr_volunteer_team,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_volunteer_team_manager,dr.volunteer.team manager,model_dr_volunteer_team,disaster_relief.group_disaster_relief_manager,1,1,1,1
+access_dr_delivery_user,dr.delivery user,model_dr_delivery,disaster_relief.group_disaster_relief_user,1,1,1,0
+access_dr_delivery_manager,dr.delivery manager,model_dr_delivery,disaster_relief.group_disaster_relief_manager,1,1,1,1

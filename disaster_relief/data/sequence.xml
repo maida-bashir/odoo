@@ -1,0 +1,14 @@
+<odoo>
+    <record id="seq_emergency_request" model="ir.sequence">
+        <field name="name">Emergency Request</field>
+        <field name="code">dr.emergency.request</field>
+        <field name="prefix">REQ/%(y)s/</field>
+        <field name="padding">5</field>
+    </record>
+    <record id="seq_delivery" model="ir.sequence">
+        <field name="name">Relief Delivery</field>
+        <field name="code">dr.delivery</field>
+        <field name="prefix">DEL/%(y)s/</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>

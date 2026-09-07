@@ -1,0 +1,76 @@
+<odoo>
+    <record id="incident_demo_flood" model="dr.incident">
+        <field name="name">North Valley Flood Response</field>
+        <field name="code">NORTH-FLD-2026</field>
+        <field name="incident_type">flood</field>
+        <field name="description">Coordinated response for the North Valley flood emergency.</field>
+        <field name="state">active</field>
+    </record>
+    <record id="area_demo_riverside" model="dr.affected.area">
+        <field name="name">Riverside District</field>
+        <field name="incident_id" ref="incident_demo_flood"/>
+        <field name="location">North Valley, Riverside</field>
+        <field name="population">1200</field>
+        <field name="priority">critical</field>
+    </record>
+    <record id="camp_demo_hillside" model="dr.relief.camp">
+        <field name="name">Hillside Community Camp</field>
+        <field name="incident_id" ref="incident_demo_flood"/>
+        <field name="area_id" ref="area_demo_riverside"/>
+        <field name="address">Hillside School Grounds</field>
+        <field name="capacity">500</field>
+        <field name="occupancy">210</field>
+    </record>
+    <record id="resource_demo_water" model="dr.resource">
+        <field name="name">Drinking Water</field>
+        <field name="code">WATER-20L</field>
+        <field name="category">water</field>
+        <field name="uom">Containers</field>
+        <field name="location">Central Warehouse</field>
+        <field name="quantity_on_hand">1000</field>
+        <field name="reorder_level">200</field>
+    </record>
+    <record id="resource_demo_rations" model="dr.resource">
+        <field name="name">Emergency Food Rations</field>
+        <field name="code">FOOD-RATION</field>
+        <field name="category">food</field>
+        <field name="uom">Boxes</field>
+        <field name="location">Central Warehouse</field>
+        <field name="quantity_on_hand">750</field>
+        <field name="reorder_level">150</field>
+    </record>
+    <record id="resource_demo_first_aid" model="dr.resource">
+        <field name="name">First Aid Kits</field>
+        <field name="code">MED-FIRSTAID</field>
+        <field name="category">medical</field>
+        <field name="uom">Kits</field>
+        <field name="location">Medical Store</field>
+        <field name="quantity_on_hand">120</field>
+        <field name="reorder_level">25</field>
+    </record>
+    <record id="skill_demo_medical" model="dr.volunteer.skill">
+        <field name="name">First Aid</field>
+        <field name="description">Basic first aid and triage.</field>
+    </record>
+    <record id="volunteer_demo_amina" model="dr.volunteer">
+        <field name="name">Amina Rahman</field>
+        <field name="phone">+00 555 0101</field>
+        <field name="availability">available</field>
+        <field name="skill_ids" eval="[(4, ref('skill_demo_medical'))]"/>
+    </record>
+    <record id="team_demo_response" model="dr.volunteer.team">
+        <field name="name">North Valley Response Team</field>
+        <field name="leader_id" ref="volunteer_demo_amina"/>
+        <field name="member_ids" eval="[(4, ref('volunteer_demo_amina'))]"/>
+        <field name="incident_ids" eval="[(4, ref('incident_demo_flood'))]"/>
+        <field name="status">ready</field>
+    </record>
+    <record id="request_demo_water" model="dr.emergency.request">
+        <field name="incident_id" ref="incident_demo_flood"/>
+        <field name="affected_area_id" ref="area_demo_riverside"/>
+        <field name="camp_id" ref="camp_demo_hillside"/>
+        <field name="priority">high</field>
+        <field name="description">Water and food for the next distribution cycle.</field>
+        <field name="request_line_ids" eval="[(0, 0, {'resource_id': ref('resource_demo_water'), 'quantity': 200}), (0, 0, {'resource_id': ref('resource_demo_rations'), 'quantity': 150})]"/>
+    </record>
+</odoo>

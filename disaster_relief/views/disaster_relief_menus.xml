@@ -1,0 +1,18 @@
+<odoo>
+    <menuitem id="menu_dr_root" name="Disaster Relief" sequence="10" groups="disaster_relief.group_disaster_relief_user"/>
+    <menuitem id="menu_dr_dashboard" name="Dashboard" parent="menu_dr_root" action="action_dr_dashboard" sequence="1"/>
+    <menuitem id="menu_dr_operations" name="Operations" parent="menu_dr_root" sequence="10"/>
+    <menuitem id="menu_dr_incidents" name="Incidents" parent="menu_dr_operations" action="action_dr_incident" sequence="1"/>
+    <menuitem id="menu_dr_areas" name="Affected Areas" parent="menu_dr_operations" action="action_dr_area" sequence="2"/>
+    <menuitem id="menu_dr_camps" name="Relief Camps" parent="menu_dr_operations" action="action_dr_camp" sequence="3"/>
+    <menuitem id="menu_dr_requests" name="Emergency Requests" parent="menu_dr_operations" action="action_dr_request" sequence="4"/>
+    <menuitem id="menu_dr_deliveries" name="Deliveries" parent="menu_dr_operations" action="action_dr_delivery" sequence="5"/>
+    <menuitem id="menu_dr_inventory" name="Inventory" parent="menu_dr_root" sequence="20"/>
+    <menuitem id="menu_dr_resources" name="Resources" parent="menu_dr_inventory" action="action_dr_resource" sequence="1"/>
+    <menuitem id="menu_dr_reporting" name="Reporting" parent="menu_dr_root" sequence="30"/>
+    <menuitem id="menu_dr_analytics" name="Request Analytics" parent="menu_dr_reporting" action="action_dr_request_graph" sequence="1"/>
+    <menuitem id="menu_dr_people" name="Volunteers and Teams" parent="menu_dr_root" sequence="40"/>
+    <menuitem id="menu_dr_volunteers" name="Volunteers" parent="menu_dr_people" action="action_dr_volunteer" sequence="1"/>
+    <menuitem id="menu_dr_skills" name="Skills" parent="menu_dr_people" action="action_dr_skill" sequence="2"/>
+    <menuitem id="menu_dr_teams" name="Teams" parent="menu_dr_people" action="action_dr_team" sequence="3"/>
+</odoo>
